@@ -38,14 +38,14 @@ python -c "import nltk; nltk.download('stopwords')"
 
 ```
 technical-challenge-ml/
-  data/                        # Pon aquí challenge_data.csv (no se versiona)
+  data/                        # challenge_data.csv
   outputs/                     # Modelos y resultados de entrenamiento
   reports/                     # Reportes (métricas, EDA, figuras)
   notebooks/
-    01_eda.ipynb              # Exploración y visualización
+    01_eda.ipynb               # Exploración y visualización
   scripts/
-    train.py                  # Entrenar y evaluar (genera modelo y reporte)
-    predict.py                # Cargar modelo y predecir sobre un CSV
+    train.py                   # Entrenar y evaluar (genera modelo y reporte)
+    predict.py                 # Cargar modelo y predecir sobre un CSV
   src/
     __init__.py
     config.py
