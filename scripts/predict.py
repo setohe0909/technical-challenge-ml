@@ -13,7 +13,7 @@ if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
 from src import config
-from src.data_loading import prepare_text
+from src.data_loading import prepare_text, read_csv_robust
 from src.evaluation import compute_metrics, save_text_report
 from src.modeling import load_artifacts
 from src.utils import join_labels, parse_groups, save_json
@@ -25,6 +25,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--input_csv", type=str, required=True)
     parser.add_argument("--output_csv", type=str, required=True)
     parser.add_argument("--evaluate", action="store_true")
+    parser.add_argument("--sep", type=str, default=None, help="CSV separator override (e.g., ',', ';', '\t')")
     return parser.parse_args()
 
 
@@ -32,7 +33,7 @@ def main() -> None:
     args = parse_args()
     model, mlb = load_artifacts(args.model_dir)
 
-    df = pd.read_csv(args.input_csv)
+    df = read_csv_robust(args.input_csv, sep=args.sep, require_cols=["title", "abstract"]) 
     if not set(["title", "abstract"]).issubset(df.columns):
         raise ValueError("Input CSV must contain 'title' and 'abstract' columns")
 

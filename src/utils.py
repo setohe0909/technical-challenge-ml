@@ -33,34 +33,35 @@ def timestamped_dir(base_dir: str, suffix: str = "_model") -> str:
 
 
 _SPLIT_RE = re.compile(config.SEPARATORS_REGEX)
+_CANONICAL_LABEL_BY_LOWER = {label.lower(): label for label in config.TARGET_LABELS}
 
 
 def parse_groups(value: Any) -> List[str]:
-    """Parse a raw group string into a list of normalized labels.
+    """Parse `group` into canonical labels defined in TARGET_LABELS.
 
-    Accepts separators: ',', '|', ';', '/'. Returns only labels present in TARGET_LABELS.
+    - Case-insensitive matching (e.g., 'neurological' → 'Neurological')
+    - Accepts separators: ',', '|', ';', '/'
+    - Deduplicates while preserving order
     """
     if value is None:
         return []
     if isinstance(value, float) and np.isnan(value):
         return []
     if isinstance(value, (list, tuple)):
-        candidates = [str(v).strip() for v in value]
+        tokens = [str(v).strip() for v in value]
     else:
-        candidates = [s.strip() for s in _SPLIT_RE.split(str(value)) if s.strip()]
-    normalized = []
-    for c in candidates:
-        # Simple normalization: capitalize first letter, lower the rest
-        label = c.strip()
-        normalized.append(label)
-    # Keep only known labels, preserve order without duplicates
+        tokens = [s.strip() for s in _SPLIT_RE.split(str(value)) if s.strip()]
+
     seen = set()
-    filtered: List[str] = []
-    for label in normalized:
-        if label in config.TARGET_LABELS and label not in seen:
-            seen.add(label)
-            filtered.append(label)
-    return filtered
+    parsed: List[str] = []
+    for tok in tokens:
+        key = tok.lower()
+        if key in _CANONICAL_LABEL_BY_LOWER:
+            canon = _CANONICAL_LABEL_BY_LOWER[key]
+            if canon not in seen:
+                seen.add(canon)
+                parsed.append(canon)
+    return parsed
 
 
 def join_labels(labels: Iterable[str]) -> str:

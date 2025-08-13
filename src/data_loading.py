@@ -1,21 +1,14 @@
 from __future__ import annotations
 
-from typing import Optional, Tuple
+from typing import Optional, Sequence, Tuple
 
 import pandas as pd
 
 from . import config, utils
 
 
-def load_dataset(csv_path: str, sep: Optional[str] = None) -> pd.DataFrame:
-    """Load dataset CSV and ensure required columns exist.
-
-    Attempts multiple parsing strategies to handle common CSV issues:
-    - Auto-detect delimiter (engine='python')
-    - Explicit separators: ',', ';', '\t'
-    - Robust quoting and escaping
-    - Optionally, user-provided separator via `sep`
-    """
+def read_csv_robust(csv_path: str, sep: Optional[str] = None, require_cols: Optional[Sequence[str]] = None) -> pd.DataFrame:
+    """Read CSV handling irregular delimiters/quotes. Optionally validate required columns."""
     candidates = []
     if sep is not None:
         candidates.append({"sep": sep, "engine": "python"})
@@ -39,11 +32,11 @@ def load_dataset(csv_path: str, sep: Optional[str] = None) -> pd.DataFrame:
                 escapechar='\\',
                 on_bad_lines='error',
             )
-            missing = [c for c in [*config.TEXT_COLUMNS, config.GROUP_COLUMN] if c not in df.columns]
-            if missing:
-                # Columns not found; continue trying alternative strategies
-                last_err = ValueError(f"Missing required columns: {missing}")
-                continue
+            if require_cols is not None:
+                missing = [c for c in require_cols if c not in df.columns]
+                if missing:
+                    last_err = ValueError(f"Missing required columns: {missing}")
+                    continue
             return df
         except Exception as e:
             last_err = e
@@ -53,6 +46,11 @@ def load_dataset(csv_path: str, sep: Optional[str] = None) -> pd.DataFrame:
         "Failed to parse CSV. Try specifying a separator with --sep (',' ';' or '\t').\n"
         f"Last error: {last_err}"
     )
+
+
+def load_dataset(csv_path: str, sep: Optional[str] = None) -> pd.DataFrame:
+    """Load dataset and ensure `title`, `abstract`, `group` exist."""
+    return read_csv_robust(csv_path, sep=sep, require_cols=[*config.TEXT_COLUMNS, config.GROUP_COLUMN])
 
 
 def prepare_text(df: pd.DataFrame) -> pd.DataFrame:
