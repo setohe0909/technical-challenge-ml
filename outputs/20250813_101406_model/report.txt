@@ -1,0 +1,18 @@
+Classification Metrics
+================================================================================
+
+F1 micro: 0.0000
+F1 macro: 0.0000
+Subset accuracy: 1.0000
+
+                precision    recall  f1-score   support
+
+Cardiovascular       0.00      0.00      0.00         0
+  Neurological       0.00      0.00      0.00         0
+   Hepatorenal       0.00      0.00      0.00         0
+   Oncological       0.00      0.00      0.00         0
+
+     micro avg       0.00      0.00      0.00         0
+     macro avg       0.00      0.00      0.00         0
+  weighted avg       0.00      0.00      0.00         0
+   samples avg       0.00      0.00      0.00         0

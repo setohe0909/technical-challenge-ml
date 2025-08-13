@@ -1,0 +1,6 @@
+{
+  "f1_micro": 0.9583422345652638,
+  "f1_macro": 0.955904997092919,
+  "subset_accuracy": 0.9009817671809257,
+  "classification_report": "                precision    recall  f1-score   support\n\nCardiovascular       0.98      0.94      0.96      1268\n  Neurological       0.96      0.96      0.96      1785\n   Hepatorenal       0.99      0.93      0.96      1091\n   Oncological       0.94      0.95      0.94       601\n\n     micro avg       0.97      0.95      0.96      4745\n     macro avg       0.97      0.94      0.96      4745\n  weighted avg       0.97      0.95      0.96      4745\n   samples avg       0.98      0.96      0.96      4745\n"
+}

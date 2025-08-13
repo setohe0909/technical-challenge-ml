@@ -1,0 +1,12 @@
+{
+  "f1_micro": 0.8773635872501351,
+  "f1_macro": 0.8701681692490515,
+  "subset_accuracy": 0.7307152875175316,
+  "classification_report": "                precision    recall  f1-score   support\n\nCardiovascular       0.95      0.86      0.91       260\n  Neurological       0.88      0.89      0.88       338\n   Hepatorenal       0.96      0.79      0.87       228\n   Oncological       0.82      0.82      0.82       130\n\n     micro avg       0.91      0.85      0.88       956\n     macro avg       0.90      0.84      0.87       956\n  weighted avg       0.91      0.85      0.88       956\n   samples avg       0.93      0.90      0.90       956\n",
+  "best_params": {
+    "clf__estimator__C": 2.0,
+    "clf__estimator__class_weight": "balanced",
+    "tfidf__max_features": 20000
+  },
+  "best_score_cv_f1_micro": 0.8674545098274077
+}

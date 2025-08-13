@@ -1,0 +1,12 @@
+{
+  "f1_micro": 0.0,
+  "f1_macro": 0.0,
+  "subset_accuracy": 1.0,
+  "classification_report": "                precision    recall  f1-score   support\n\nCardiovascular       0.00      0.00      0.00         0\n  Neurological       0.00      0.00      0.00         0\n   Hepatorenal       0.00      0.00      0.00         0\n   Oncological       0.00      0.00      0.00         0\n\n     micro avg       0.00      0.00      0.00         0\n     macro avg       0.00      0.00      0.00         0\n  weighted avg       0.00      0.00      0.00         0\n   samples avg       0.00      0.00      0.00         0\n",
+  "best_params": {
+    "clf__estimator__C": 0.5,
+    "clf__estimator__class_weight": "balanced",
+    "tfidf__max_features": 20000
+  },
+  "best_score_cv_f1_micro": 0.0
+}
