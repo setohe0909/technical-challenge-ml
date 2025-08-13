@@ -2,11 +2,18 @@ from __future__ import annotations
 
 import argparse
 import os
+import sys
 from typing import Tuple
 
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
+
+# Allow running this script directly: add project root to sys.path
+CURRENT_DIR = os.path.dirname(__file__)
+PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, os.pardir))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 
 from src import config
 from src.data_loading import load_dataset, prepare_text, extract_features_and_labels
@@ -23,6 +30,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--test_size", type=float, default=0.2)
     parser.add_argument("--random_state", type=int, default=config.RANDOM_STATE_DEFAULT)
     parser.add_argument("--cv", type=int, default=3)
+    parser.add_argument("--sep", type=str, default=None, help="CSV separator override (e.g., ',', ';', '\t')")
     return parser.parse_args()
 
 
@@ -30,7 +38,7 @@ def main() -> None:
     args = parse_args()
     set_global_seed(args.random_state)
 
-    df = load_dataset(args.data_path)
+    df = load_dataset(args.data_path, sep=args.sep)
     df = prepare_text(df)
 
     # Parse labels and prepare multilabel binarizer

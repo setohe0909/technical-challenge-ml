@@ -1,19 +1,58 @@
 from __future__ import annotations
 
-from typing import Tuple
+from typing import Optional, Tuple
 
 import pandas as pd
 
 from . import config, utils
 
 
-def load_dataset(csv_path: str) -> pd.DataFrame:
-    """Load dataset CSV and ensure required columns exist."""
-    df = pd.read_csv(csv_path)
-    missing = [c for c in [*config.TEXT_COLUMNS, config.GROUP_COLUMN] if c not in df.columns]
-    if missing:
-        raise ValueError(f"Missing required columns: {missing}")
-    return df
+def load_dataset(csv_path: str, sep: Optional[str] = None) -> pd.DataFrame:
+    """Load dataset CSV and ensure required columns exist.
+
+    Attempts multiple parsing strategies to handle common CSV issues:
+    - Auto-detect delimiter (engine='python')
+    - Explicit separators: ',', ';', '\t'
+    - Robust quoting and escaping
+    - Optionally, user-provided separator via `sep`
+    """
+    candidates = []
+    if sep is not None:
+        candidates.append({"sep": sep, "engine": "python"})
+    # Try default fast engine first
+    candidates.append({})
+    # Then robust strategies
+    candidates.extend([
+        {"sep": None, "engine": "python"},
+        {"sep": ",", "engine": "python"},
+        {"sep": ";", "engine": "python"},
+        {"sep": "\t", "engine": "python"},
+    ])
+
+    last_err: Exception | None = None
+    for kw in candidates:
+        try:
+            df = pd.read_csv(
+                csv_path,
+                **kw,
+                quotechar='"',
+                escapechar='\\',
+                on_bad_lines='error',
+            )
+            missing = [c for c in [*config.TEXT_COLUMNS, config.GROUP_COLUMN] if c not in df.columns]
+            if missing:
+                # Columns not found; continue trying alternative strategies
+                last_err = ValueError(f"Missing required columns: {missing}")
+                continue
+            return df
+        except Exception as e:
+            last_err = e
+            continue
+
+    raise RuntimeError(
+        "Failed to parse CSV. Try specifying a separator with --sep (',' ';' or '\t').\n"
+        f"Last error: {last_err}"
+    )
 
 
 def prepare_text(df: pd.DataFrame) -> pd.DataFrame:

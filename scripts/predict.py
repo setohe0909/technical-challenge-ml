@@ -2,8 +2,15 @@ from __future__ import annotations
 
 import argparse
 import os
+import sys
 
 import pandas as pd
+
+# Allow running this script directly: add project root to sys.path
+CURRENT_DIR = os.path.dirname(__file__)
+PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, os.pardir))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 
 from src import config
 from src.data_loading import prepare_text
